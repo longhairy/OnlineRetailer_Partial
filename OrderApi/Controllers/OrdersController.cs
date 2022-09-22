@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using OrderApi.Data;
-using OrderApi.Models;
+using SharedModels;
 using RestSharp;
 
 namespace OrderApi.Controllers
@@ -45,11 +45,21 @@ namespace OrderApi.Controllers
             {
                 return BadRequest();
             }
+            // Check if customer exists
+            RestClient customerCheck = new RestClient("https://localhost:51620/customers/"+order.CustomerId);
+            var customerRequest = new RestRequest(order.CustomerId.ToString());
+            var customerResponse = customerCheck.GetAsync<Customer>(customerRequest);
+            customerResponse.Wait();
+            var customer = customerResponse.Result;
+            if(customer == null)
+            {
+                return NotFound();// customer not found
+            }
 
             // Call ProductApi to get the product ordered
             // You may need to change the port number in the BaseUrl below
             // before you can run the request.
-            RestClient c = new RestClient("https://localhost:5001/products/");
+            RestClient c = new RestClient("https://localhost:50983/products/");
             var request = new RestRequest(order.ProductId.ToString());
             var response = c.GetAsync<Product>(request);
             response.Wait();

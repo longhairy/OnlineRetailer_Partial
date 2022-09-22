@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProductApi.Data;
-using ProductApi.Models;
+using SharedModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +37,6 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
